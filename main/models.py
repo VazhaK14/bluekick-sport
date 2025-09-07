@@ -1,33 +1,51 @@
 import uuid
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
-class News(models.Model):
+class Product(models.Model):
     CATEGORY_CHOICHES = [
-        ('transfer', 'Transfer'),
-        ('update', 'Update'),
-        ('exclusive', "Exclusive"),
-        ('match', 'Match'),
-        ('rumor', 'Rumor'),
-        ('analysis', 'Analysis'),
+        ('ball', 'Ball'), 
+        ('accessory', 'Accessory'), 
+        ('socks', 'Socks'), 
+        ('shoes', 'Shoes'), 
+        ('jersey', 'Jersey'),
+        ('training set', 'Training Set')
     ]
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=255)
-    content = models.TextField()
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICHES, default='update')
+    name = models.CharField(max_length=255)
+    price = models.IntegerField()
+    stock = models.IntegerField()
+    description = models.TextField()
     thumbnail = models.URLField(blank=True, null=True)
-    news_views = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_featured = models.BooleanField(default=False)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICHES, default='update')
+    rating = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    rating_sum = models.IntegerField(default=0)
+    rating_count = models.IntegerField(default=0)
+    is_avail = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return self.name
 
-    def __str__(self) -> str:
-        return self.title
-    
     @property
-    def is_news_hot(self) -> bool:
-        return self.news_views > 20
+    def is_product_top(self):
+        return self.rating > 3
     
-    def increment_views(self):
-        self.news_views += 1
+    def save(self, *args, **kwargs):
+        self.is_avail = self.stock > 0
+        super().save(*args, **kwargs)
+    
+    def give_rating(self, rate):
+        if rate < 0 or rate > 5:
+            raise ValueError('Rating Product is 0-5')
+        
+        self.rating_sum += rate
+        self.rating_count += 1
+
+        self.rating = min(self.rating_sum / self.rating_count, 5)
         self.save()
+        return self.rating
+
+
+    
+    
