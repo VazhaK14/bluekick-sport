@@ -33,7 +33,7 @@ python-dotenv
 2. Menginisiasikan nama app dan pathnya pada `urls.py` di aplikasi main
 3. import path dan include pada `urls.py` di folder project, lalu menambahkan route main di sana dengan `path('', include('main.urls'))`
 
-**C. Membuat model pada aplikasi `main` dengan nama `Product` dan memiliki atribute**
+**D. Membuat model pada aplikasi `main` dengan nama `Product` dan memiliki atribute**
 
 1. import models dari django ke dalam `models.py`
 2. membuat class Product dengan parameter models.Model
@@ -53,4 +53,4 @@ git commit -m "Tugas 2"
 git push pws master
 ```
 
-Akan diminta username dan password, masukkan sesuai yang telah diberikan 6. Project di push dan secara otomatis terdeploy
+6. Akan diminta username dan password, masukkan sesuai yang telah diberikan 6. Project di push dan secara otomatis terdeploy
