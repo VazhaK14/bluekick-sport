@@ -141,7 +141,7 @@ Ketika tidak adanya csrf_token ini, penyerang dapat menyisipkan request ke websi
 
 1. Membuat fungsi `show_xml`, `show_json`, `show_xml_by_id`, dan `show_json_by_id` by ID pada views:
 
-```
+```python
 def show_xml(request):
     product_list = Product.objects.all()
     xml_data = serializers.serialize('xml', product_list)
@@ -173,7 +173,7 @@ def show_json_by_id(request, product_id):
 
 2. Menambahkan masing-masing fungsi ke url pada `urls.py`:
 
-```
+```python
 ...
 path('xml/', show_xml, name='show_xml'),
 path('json/', show_json, name='show_json'),
@@ -184,7 +184,7 @@ path('json/<str:product_id>/', show_json_by_id, name='show_json_by_id'),
 
 3. Membuat file `forms.py` untuk membuat model dan fungsionalitas penambahan produk:
 
-```
+```python
 from django.forms import *
 from main.models import Product
 
@@ -196,7 +196,7 @@ class ProductForm(ModelForm):
 
 4. Membuat `base.html` sebagai struktur utama dari html dalam aplikasi, dan mendefinisikan sebagai BASE_DIR pada `settings.py`:
 
-```
+```html
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -209,7 +209,6 @@ class ProductForm(ModelForm):
     {% block content %}{% endblock content %}
   </body>
 </html>
-
 ```
 
 4. Membuat html berupa `add_product.html` sebagai tempat untuk menambahkan produk dan `product_detail.html` untuk melihat detail produk. Keduanya juga di extends dari struktur html yang telah dibuat pada `base.html`
@@ -218,7 +217,7 @@ class ProductForm(ModelForm):
 
 - Menambahkan produk, dengan fungsi:
 
-```
+```python
 def add_product(request):
     form = ProductForm(request.POST or None)
 
@@ -232,7 +231,7 @@ def add_product(request):
 
 - Melihat list produk, dengan memperbarui `show_main`:
 
-```
+```python
 def show_main(request):
     product_list = Product.objects.all()
 
@@ -248,7 +247,7 @@ def show_main(request):
 
 - Button atau judul produk yang dapat melihat produk secara lebih detail, dengan fungsi:
 
-```
+```python
 def show_product(request, id):
     product = get_object_or_404(Product, pk=id)
     context = {
@@ -267,14 +266,14 @@ def show_product(request, id):
 
 Fungsi yang ditambahkan juga dimasukkan routenya ke dalam `urls.py`
 
-```
+```python
 path('add_product/', add_product, name='add_product'),
 path('product/<str:id>/', show_product, name='show_product'),
 ```
 
 6. Terakhir, mendefinisikan domain untuk csrf pada `settings.py`:
 
-```
+```python
 CSRF_TRUSTED_ORIGINS = [
     'https://vazha-khayri-bluekicksport.pbp.cs.ui.ac.id'
 ]
