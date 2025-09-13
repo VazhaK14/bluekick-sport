@@ -278,3 +278,17 @@ CSRF_TRUSTED_ORIGINS = [
     'https://vazha-khayri-bluekicksport.pbp.cs.ui.ac.id'
 ]
 ```
+
+**Screenshot Postman**
+
+- XML
+  ![alt text](image-2.png)
+
+- XML by id
+  ![alt text](image-3.png)
+
+- JSON
+  ![alt text](image-4.png)
+
+- JSON by id
+  ![alt text](image-5.png)
