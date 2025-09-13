@@ -1,4 +1,4 @@
-<h1>Tugas 2: Implementasi  Model-View-Template (MVT) pada Django<h1/>
+<h1>Tugas 2: Implementasi  Model-View-Template (MVT) pada Django</h1>
 
 **Implementasi Aplikasi BlueKick Sport**
 
@@ -101,7 +101,7 @@ Saya akan memberikan feedback yang sangat baik untuk kedua belah pihak
 
 ---
 
-<h1>TUGAS 3: Implementasi Form dan Data Delivery pada Django<h1/>
+<h1>TUGAS 3: Implementasi Form dan Data Delivery pada Django</h1>
 
 **Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?**
 
