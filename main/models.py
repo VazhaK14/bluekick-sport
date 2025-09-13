@@ -13,16 +13,18 @@ class Product(models.Model):
         ('training set', 'Training Set')
     ]
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     price = models.IntegerField()
     stock = models.IntegerField()
     description = models.TextField()
     thumbnail = models.URLField(blank=True, null=True)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICHES, default='update')
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICHES, default='ball')
     rating = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
     rating_sum = models.IntegerField(default=0)
     rating_count = models.IntegerField(default=0)
     is_avail = models.BooleanField(default=False)
+    is_featured = models.BooleanField(default=False)
     
     def __str__(self):
         return self.name
@@ -43,7 +45,6 @@ class Product(models.Model):
         self.rating_count += 1
 
         self.rating = min(self.rating_sum / self.rating_count, 5)
-        self.save()
         return self.rating
 
 

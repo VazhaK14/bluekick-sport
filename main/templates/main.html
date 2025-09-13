@@ -1,3 +1,4 @@
+{% extends 'base.html' %} {% block content %}
 <h1>{{app_name}}</h1>
 
 <!-- Ubah sesuai dengan nama kamu -->
@@ -6,3 +7,40 @@
 <!-- Ubah sesuai dengan kelas kamu -->
 <h4>Class:</h4>
 <p>{{class}}</p>
+
+<a href="{% url 'main:add_product' %}">
+  <button>Add Product</button>
+</a>
+
+<hr />
+
+{% if not product_list %}
+<p>Belum ada product pada Bluekick Sport</p>
+{% else %} {% for product in product_list %}
+<div>
+  <h2>
+    <a href="{% url 'main:show_product' product.id %}">{{ product.name }}</a>
+  </h2>
+
+  <p>
+    <b>{{ product.get_category_display }}</b> {% if product.is_featured %} |
+    <b>Featured</b> {% endif %}
+    <span>
+      {% if product.is_product_top %} | <b>Top Product!</b> {% endif %} |
+      Stocks: {{ product.stock }} | Rating: {{ product.rating }}
+    </span>
+  </p>
+
+  {% if product.thumbnail %}
+  <img src="{{ product.thumbnail }}" alt="thumbnail" width="150" height="100" />
+  {% endif %}
+
+  <p>{{ product.description|truncatewords:25 }}...</p>
+  <p>
+    <a href="{% url 'main:show_product' product.id %}"
+      ><button>Show Details</button></a
+    >
+  </p>
+</div>
+<hr />
+{% endfor %} {% endif %} {% endblock content%}
