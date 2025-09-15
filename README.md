@@ -279,6 +279,9 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 ```
 
+**Feedback untuk asdos di tutorial 2**
+Asdos sangat membantu terutama menghadapi beberapa error yang terjadi pada pendefinisian schema dan juga database, forum FAQ dijawab dengan on point, dan asdos saya secara pribadi juga membantu untuk menyelesaikan masalah yang dialami.
+
 **Screenshot Postman**
 
 - XML
