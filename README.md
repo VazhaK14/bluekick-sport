@@ -603,7 +603,7 @@ path('logout/', logout_user, name='logout'),
 ...
 ```
 
-5. Beriut adalah contoh tampilan aplikasi yang diakses user setelah login.
+7. Berikut adalah contoh tampilan aplikasi yang diakses user setelah login.
 
 - All Products
   ![alt text](image-6.png)
