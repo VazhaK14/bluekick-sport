@@ -295,3 +295,318 @@ Asdos sangat membantu terutama menghadapi beberapa error yang terjadi pada pende
 
 - JSON by id
   ![alt text](image-5.png)
+
+---
+
+<h1>TUGAS 3: Implementasi Form dan Data Delivery pada Django</h1>
+
+**Apa itu Django `AuthenticationForm`? Jelaskan juga kelebihan dan kekurangannya.**
+
+Merupakan Form bawaan untuk user melakukan login pengguna:
+**Kelebihan:**
+
+- Tidak perlu membuat authentication logic from scratch, sudah tersedia dan siap pakai
+
+- Session dan Middleware sudah terintegrasi langsung dengan sistem Auth Django
+
+- Lebih aman karena secara default sudah menerapkan hashing password, session dan middleware
+
+- Lebih mudah karena tidak perlu membuat seperti JWT Token dan lainnya secara manual
+
+**Kekurangan**
+
+- Keterbatasan pilihan login hanya username dan password, jika ingin menggunakan Sign in options seperti Google, Email, hingga SSO tidak bisa.
+
+- Secara default tidak disediakan 2FA, jadi untuk lebih aman harus setting manual
+
+- Tidak memiliki limitasi untuk percobaan login, bisa di DDoS atau di Brute Force
+
+- Jika ingin menggunakan selain Django Template Engine, tidak disarankan menggunakan AuthenticationForm karena kurang relevan karena backend hanya sebagai endpoint untuk auth-nya.
+
+**Apa saja kelebihan dan kekurangan session dan cookies dalam konteks menyimpan state di aplikasi web?**
+
+**1. Cookies**
+Informasi kunjungan web yang dikirimkan ke browser dan disimpan ke _device_ seperti login details, preferensi, shopping carts, ataupun lainnya.
+
+**Kelebihan**
+
+- Dapat diakses langsung dari browser
+- client side, jadi tidak perlu menyimpan data ke server
+- Preferensi untuk kenyamanan user dalam menggunakan website
+
+**Kekurangan**
+
+- Cookie memiliki ukuran yang kecil dan terbatas, biasanya 4KB
+- Tidak cocok untuk menyimpan data-data sensitif
+- User dapat mengelola cookie yang dimiliki
+
+**2. Session**
+Informasi yang disimpan langsung ke server dalam suatu aplikasi yang didapatkan saat user berinteraksi dengan aplikasi. Informasi yang disimpan meliputi authentication, preferensi, dan data-data yang diinput oleh user.
+
+**Kelebihan**
+
+- Lebih aman, karena data sensitif langsung disimpan ke server
+- Penyimpanan data bisa lebih besar
+- Data yang didapatkan bisa diolah untuk fitur" lainnya yang bisa digunakan user
+
+**Kekurangan**
+
+- Server membutuhkan penyimpanan yang besar
+- Dari sisi developer, diperlukan maintain berkala dan terdapat cost yang dikeluarkan untuk tetap menjalankan server.
+- Session memiliki expired time, dan user biasanya harus login ulang jika session tersebut sudah expired
+
+**Apakah penggunaan cookies aman secara default dalam pengembangan web, atau apakah ada risiko potensial yang harus diwaspadai? Bagaimana Django menangani hal tersebut?**
+
+Terdapat beberapa risiko yang harus di antisipasi saat menyimpan data menggunakan cookies karena secara default tidak aman. Beberapa risiko yang harus diwaspadai:
+
+- Penyerang dapat membaca cookies dan melakukan hijacking user
+- Penyerang dapat melakukan request yang berbahaya ke server
+- Data yang disimpan dalam cookie bisa dicuri
+- Dan lainnya
+
+Django telah melakukan antisipasi hal ini dengan mengirim cookies hanya pada HTTPS, memiliki built in CSRF protection untuk mencegah penyerang melakukan request ke server, session tidak disimpan secara langsung di cookies, terdapat SESSION_COOKIE_SECURE, SESSION_COOKIE_HTTPONLY, dan SESSION_COOKIE_SAMESITE untuk membatasi risiko penyerangan siber yang bisa saja terjadi.
+
+**Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).**
+
+1. Pada `views.py` melakukan import authentications library dari python dan membuat fungsi auth-nya.
+
+```python
+...
+from django.contrib.auth.forms import *
+from django.contrib import messages
+from django.contrib.auth import *
+from django.contrib.auth.decorators import *
+...
+```
+
+```python
+
+def register(request):
+    form = UserCreationForm()
+
+    if request.method == "POST":
+        form = UserCreationForm(data=request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your account has been successfully created!')
+            return redirect('main:login')
+    context = {'form':form}
+    return render(request, 'register.html', context)
+
+def login_user(request):
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            response = HttpResponseRedirect(reverse("main:show_main"))
+            response.set_cookie('last_login', str(datetime.datetime.now()))
+            return response
+
+    else:
+        form = AuthenticationForm(request)
+    context = {'form':form}
+    return render(request, 'login.html', context)
+
+def logout_user(request):
+    logout(request)
+    response = HttpResponseRedirect(reverse('main:login'))
+    response.delete_cookie('last_login')
+    return response
+
+```
+
+2. Implementasi login di aplikasikan pada template html, dan membuat form untuk login dan registrasi
+   a. `register.html`
+
+   ```html
+   {% extends 'base.html' %} {% block meta %}
+   <title>Register</title>
+   {% endblock meta %} {% block content %}
+
+   <div>
+     <h1>Register</h1>
+
+     <form method="POST">
+       {% csrf_token %}
+       <table>
+         {{ form.as_table }}
+         <tr>
+           <td></td>
+           <td><input type="submit" name="submit" value="Daftar" /></td>
+         </tr>
+       </table>
+     </form>
+
+     {% if messages %}
+     <ul>
+       {% for message in messages %}
+       <li>{{ message }}</li>
+       {% endfor %}
+     </ul>
+     {% endif %}
+   </div>
+
+   {% endblock content %}
+   ```
+
+   b. `login.html`
+
+   ```html
+   {% extends 'base.html' %} {% block meta %}
+   <title>Login</title>
+   {% endblock meta %} {% block content %}
+   <div class="login">
+     <h1>Login</h1>
+
+     <form method="POST" action="">
+       {% csrf_token %}
+       <table>
+         {{ form.as_table }}
+         <tr>
+           <td></td>
+           <td><input class="btn login_btn" type="submit" value="Login" /></td>
+         </tr>
+       </table>
+     </form>
+
+     {% if messages %}
+     <ul>
+       {% for message in messages %}
+       <li>{{ message }}</li>
+       {% endfor %}
+     </ul>
+     {% endif %} Don't have an account yet?
+     <a href="{% url 'main:register' %}">Register Now</a>
+   </div>
+
+   {% endblock content %}
+   ```
+
+   c. Modifikasi `main.html`
+
+   ```html
+   {% extends 'base.html' %} {% block content %}
+   <h1>{{app_name}}</h1>
+
+   <!-- Ubah sesuai dengan nama kamu -->
+   <h4>Name:</h4>
+   <p>{{name}}</p>
+   <!-- Ubah sesuai dengan kelas kamu -->
+   <h4>Class:</h4>
+   <p>{{class}}</p>
+
+   <a href="{% url 'main:add_product' %}">
+     <button>Add Product</button>
+   </a>
+
+   <a href="{% url 'main:logout' %}">
+     <button>Logout</button>
+   </a>
+   <h5>Sesi terakhir login: {{ last_login }}</h5>
+
+   <a href="?filter=all">
+     <button type="button">All Products</button>
+   </a>
+   <a href="?filter=my">
+     <button type="button">My Products</button>
+   </a>
+
+   <hr />
+
+   {% if not product_list %}
+   <p>Belum ada product pada {{app_name}}</p>
+   {% else %} {% for product in product_list %}
+   <div>
+     <h2>
+       <a href="{% url 'main:show_product' product.id %}">{{ product.name }}</a>
+     </h2>
+
+     <p>
+       <b>{{ product.get_category_display }}</b> {% if product.is_featured %} |
+       <b>Featured</b> {% endif %}
+       <span>
+         {% if product.is_product_top %} | <b>Top Product!</b> {% endif %} |
+         Stocks: {{ product.stock }} | Rating: {{ product.rating }}
+       </span>
+     </p>
+
+     {% if product.thumbnail %}
+     <img
+       src="{{ product.thumbnail }}"
+       alt="thumbnail"
+       width="150"
+       height="100"
+     />
+     {% endif %}
+
+     <p>{{ product.description|truncatewords:25 }}...</p>
+     <p>
+       <a href="{% url 'main:show_product' product.id %}"
+         ><button>Show Details</button></a
+       >
+     </p>
+   </div>
+   <hr />
+   {% endfor %} {% endif %} {% endblock content%}
+   ```
+
+3. Setelah membuat authentication pada views dan template, langkah selanjutnya yang dilakukan adalah membuat entity user pada models yang bisa disimpan dalam database setelah user melakukan register dan login.
+
+```python
+user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+```
+
+Lakukan migrasi kembali untuk mendaftarkan entity user ke dalam database.
+
+4. Lalu setelahnya, kita batasi halaman utama untuk melihat produk dan untuk menambahkan produk dengan property
+
+```python
+@login_required(login_url='/login')
+```
+
+Agar user diminta untuk melakukan login sebelum bisa mengakses aplikasi
+
+5. Menambahkan fitur filter produk pada fungsi show_main agar user dapat melihat produk yang dimiliki dan produk keseluruhan:
+
+```python
+@login_required(login_url='/login')
+def show_main(request):
+    filter_type = request.GET.get("filter", "all")
+
+    if filter_type == "all":
+        product_list = Product.objects.all()
+    else:
+        product_list = Product.objects.filter(user=request.user)
+
+    context = {
+        'app_name': 'BlueKick Sport',
+        'name': request.user.username,
+        'class': 'PBP-F',
+        'product_list': product_list,
+        'last_login': request.COOKIES.get('last_login', 'Never')
+    }
+
+    return render(request, 'main.html', context)
+
+```
+
+6. Menambahkan path pada `urls.py` untuk fitur-fitur yang telah ditambahkan.
+
+```python
+...
+path('register/', register, name='register'),
+path('login/', login_user, name='login'),
+path('logout/', logout_user, name='logout'),
+...
+```
+
+5. Beriut adalah contoh tampilan aplikasi yang diakses user setelah login.
+
+- All Products
+  ![alt text](image-6.png)
+
+- My Products
+  ![alt text](image-7.png)

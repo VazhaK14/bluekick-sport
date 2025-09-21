@@ -32,4 +32,10 @@
   </p>
   <button type="submit">Buy Product</button>
 </form>
-{% endif %} {% endblock content %}
+
+{% if product.user %}
+<p>Seller: {{ product.user.username }}</p>
+{% else %}
+<p>Author: Anonymous</p>
+
+{% endif %} {% endif %} {% endblock content %}
