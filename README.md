@@ -630,3 +630,47 @@ Contoh Aplikasi Non-Responsive:
 -> SIAK NG, dari asumsi yang saya dapat berikan, aplikasi ini dibangun tanpa teknologi responsive ataupun memang direncanakan untuk tidak menerapkan prinsip responsive.
 
 **3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!**
+
+a. Margin = bagian di luar elemen yang membatasi dengan elemen lain, biasanya digunakan untuk memberi jarak antar elemen lain
+b. border = Garis yang dapat dibuat di tepi elemen untuk membungkus elemen. Style dapat dikostumisasi seperti warna, dan lainnya.
+c. Padding = Bagian di dalam elemen yang biasanya berfungsi untuk memberi jarak antar elemen di dalam dengan border, sisi tepi elemen tersebut.
+
+**4. Jelaskan konsep flex box dadn grid layout beserta kegunaannya**
+
+a. Flexbox, biasanya digunakan untuk mengatur layout dengan lebih fleksibel agar mencapai bentuk yang diinginkan. Mengatur elemen secara baris atau kolom tapi tidak keduanya.
+b. Grid, Digunakan untuk mengatur elemen secara baris dan kolom, jadi mudah di gunakan jika membayangkan dalam bentuk tabular. Namun, pengaturan layout lebih terbatas dan tidak sefleksible flexbox.
+
+**5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step**
+
+1. Membuat folder baru untuk inisiasi `global.css` dengan `static/css/global.css`
+2. Setting static files pada `settings.py`
+```python
+STATIC_URL = '/static/'
+if DEBUG:
+  STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+  ]
+else:
+  STATIC_ROOT = BASE_DIR / 'static'
+```
+
+3. Menambahkan middleware WhiteNoise untuk mengelola file statis secara otomatis
+```python
+...
+'whitenoise.middleware.WhiteNoiseMiddleware',
+...
+```
+
+4. Melakukan konfigurasi css dan tailwind pada `base.html` pada bagian head
+```html
+...
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="{% static 'css/global.css' %}" >
+...
+
+```
+
+5. Melakukan import tailwind pada `global.css` untuk snippet dengan `@import "tailwindcss"`
+
+6. Menambahkan edit_product dan delete_product pada `views.py` sebagai fitur untuk menghapus dan merubah attribut produk.
+
