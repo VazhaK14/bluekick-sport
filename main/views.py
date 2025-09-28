@@ -1,7 +1,7 @@
 import datetime
 from django.shortcuts import *
 from main.models import Product
-from main.forms import ProductForm
+from main.forms import *
 from django.core import serializers
 
 from django.http import *
@@ -17,6 +17,7 @@ from django.contrib.auth.decorators import *
 @login_required(login_url='/login')
 def show_main(request):
     filter_type = request.GET.get("filter", "all")
+    seller_list = Seller.objects.all()
 
     if filter_type == "all":
         product_list = Product.objects.all()
@@ -28,6 +29,7 @@ def show_main(request):
         'name': request.user.username,
         'class': 'PBP-F',
         'product_list': product_list,
+        'seller_list': seller_list,
         'last_login': request.COOKIES.get('last_login', 'Never')
     }
 
@@ -61,6 +63,39 @@ def show_product(request, id):
         return redirect('main:show_main')
 
     return render(request, 'product_detail.html', context)
+
+def add_seller(request):
+    form = SellerForm(request.POST or None)
+
+    if form.is_valid() and request.method == 'POST':
+        seller_entry = form.save(commit=False)
+        seller_entry.user = request.user
+        seller_entry.save()
+        return redirect('main:show_main')
+    
+    context = {'form': form}
+    return render(request, 'add_seller.html', context)
+    
+
+def edit_product(request, id):
+    product = get_object_or_404(Product, pk=id)
+    form = ProductForm(request.POST or None, instance=product)
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('main:show_main')
+    
+    context = {
+        'form': form
+    }
+
+    return render(request, 'edit_product.html', context)
+
+
+def delete_product(request, id):
+    product = get_object_or_404(Product, pk=id)
+    product.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))
+
 
 def show_xml(request):
     product_list = Product.objects.all()

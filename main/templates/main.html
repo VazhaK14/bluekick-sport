@@ -1,58 +1,71 @@
-{% extends 'base.html' %} {% block content %}
-<h1>{{app_name}}</h1>
+{% extends 'base.html' %}
+{% block content %}
+{% include 'navbar.html' %}
 
-<!-- Ubah sesuai dengan nama kamu -->
-<h4>Name:</h4>
-<p>{{name}}</p>
-<!-- Ubah sesuai dengan kelas kamu -->
-<h4>Class:</h4>
-<p>{{class}}</p>
+<div class="flex flex-col items-center justify-center mt-20 pb-6 border-b-2 border-gray-300">
+  <h1 class="text-4xl font-extrabold text-primary-600">Bluekick Sports</h1>
+  <p class="text-lg text-gray-600 mt-2">Your Most Trusted Original Sports Wearable</p>
+</div>
 
-<a href="{% url 'main:add_product' %}">
-  <button>Add Product</button>
-</a>
+<div class="flex justify-center gap-4 mt-6">
+  <p class="text-2xl">Welcome, {{user.username}}</p>
+</div>
 
-<a href="{% url 'main:logout' %}">
-  <button>Logout</button>
-</a>
-<h5>Sesi terakhir login: {{ last_login }}</h5>
+<h5 class="text-center mt-4 text-gray-500">Sesi terakhir login: 
+  <span class="font-semibold text-gray-700">{{ last_login }}</span>
+</h5>
 
-<a href="?filter=all">
-  <button type="button">All Products</button>
-</a>
-<a href="?filter=my">
-  <button type="button">My Products</button>
-</a>
+<div class="flex justify-center gap-4 mt-6">
+  <a href="?filter=all">
+    <button type="button" class="px-5 py-2 rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 transition">All Products</button>
+  </a>
+  <a href="?filter=my">
+    <button type="button" class="px-5 py-2 rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 transition">My Products</button>
+  </a>
+</div>
 
-<hr />
+<hr class="my-8 border-gray-300"/>
 
 {% if not product_list %}
-<p>Belum ada product pada {{app_name}}</p>
-{% else %} {% for product in product_list %}
-<div>
-  <h2>
-    <a href="{% url 'main:show_product' product.id %}">{{ product.name }}</a>
-  </h2>
+  <p class="text-center text-gray-600">Belum ada product pada {{app_name}}</p>
+{% else %}
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-10">
+    {% for product in product_list %}
+      <div class="border rounded-2xl shadow-md hover:shadow-lg transition p-6 max-sm:p-3 flex flex-col bg-white">
+        {% if product.thumbnail %}
+          <img src="{{ product.thumbnail }}" alt="thumbnail" class="w-full h-40 object-cover rounded-lg mb-4"/>
+        {% else %}
+          <div class="w-full h-40 flex items-center justify-center bg-gray-100 rounded-lg mb-4 text-gray-400">
+            No Image
+          </div>
+        {% endif %}
 
-  <p>
-    <b>{{ product.get_category_display }}</b> {% if product.is_featured %} |
-    <b>Featured</b> {% endif %}
-    <span>
-      {% if product.is_product_top %} | <b>Top Product!</b> {% endif %} |
-      Stocks: {{ product.stock }} | Rating: {{ product.rating }}
-    </span>
-  </p>
+        <h2 class="text-xl font-bold text-primary-600 mb-1 hover:text-yellow-600 transition-colors">
+          <a href="{% url 'main:show_product' product.id %}">{{ product.name }}</a>
+        </h2>
 
-  {% if product.thumbnail %}
-  <img src="{{ product.thumbnail }}" alt="thumbnail" width="150" height="100" />
-  {% endif %}
+        <p class="text-sm text-gray-600 mb-2">
+          <b>{{ product.get_category_display }}</b>
+          {% if product.is_featured %} | <b class="text-yellow-600">Featured</b> {% endif %}
+          {% if product.is_product_top %} | <b class="text-green-600">Top Product!</b> {% endif %}
+        </p>
 
-  <p>{{ product.description|truncatewords:25 }}...</p>
-  <p>
-    <a href="{% url 'main:show_product' product.id %}"
-      ><button>Show Details</button></a
-    >
-  </p>
-</div>
-<hr />
-{% endfor %} {% endif %} {% endblock content%}
+        <p class="text-sm text-gray-500 mb-3">Stocks: {{ product.stock }} | ⭐ {{ product.rating }}</p>
+
+        <p class="text-gray-700 text-sm mb-4">{{ product.description|truncatewords:25 }}...</p>
+        <div class="flex gap-3 mt-auto">
+          {% if user.is_authenticated and product.user == user %}
+          <a href="{% url 'main:edit_product' product.pk %}">
+            <button class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600  transition">Edit</button>
+          </a>
+          <a href="{% url 'main:delete_product' product.pk %}">
+            <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600  transition">Delete</button>
+
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock content %}

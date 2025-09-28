@@ -10,7 +10,10 @@ urlpatterns = [
     path('json/', show_json, name='show_json'),
     path('xml/<str:product_id>/', show_xml_by_id, name='show_xml_by_id'),
     path('json/<str:product_id>/', show_json_by_id, name='show_json_by_id'),
+    path('add_seller/', add_seller, name='add_seller'),
     path('register/', register, name='register'),
     path('login/', login_user, name='login'),
     path('logout/', logout_user, name='logout'),
+    path('product/<uuid:id>/edit', edit_product, name='edit_product'),
+    path('product/<uuid:id>/delete', delete_product, name='delete_product')
 ]

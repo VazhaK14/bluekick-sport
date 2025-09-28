@@ -610,3 +610,23 @@ path('logout/', logout_user, name='logout'),
 
 - My Products
   ![alt text](image-7.png)
+
+---
+<h1>Tugas 5: Desain Web Menggunakan HTML, CSS, dan Framework CSS<h1/>
+
+**1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!**
+-> Terdapat beberapa selector yang mengatur elemen yang sama dengan prioritas berikut:
+a. Inline Style `style="text: 12px"` akan overwrite css yang telah terdefinisi
+b. ID Selector `#myClass` merupakan selector css yang akan lebih diprioritaskan dibandingkan selector css classes
+c. Class `.myClass`, attribute `[href=^httpsL]`, dan pseudo-classes `:hover`. Ketiganya memiliki urutan prioritas yang setara.
+d. Element/tag selector `div`. Menjadi prioritas terakhir dan juga bentuk dari pseudo-elementsnya
+
+**2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa!**
+-> Dari segi user, responsive design akan sangat diperlukan karena membantu untuk membuka di berbagai device, karena responsive design membuat aplikasi tersebut kompatible dan dapat dilihat dengan nyaman oleh user apapun devicenya. 
+
+Juga dari developer, ketika menerapkan responsive design, maka aplikasi yang mereka buat dapat menjangkau lebih banyak jenis user, tidak hanya spesifik ke satu user pengguna device tertentu saja.
+
+Contoh Aplikasi Non-Responsive:
+-> SIAK NG, dari asumsi yang saya dapat berikan, aplikasi ini dibangun tanpa teknologi responsive ataupun memang direncanakan untuk tidak menerapkan prinsip responsive.
+
+**3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!**
