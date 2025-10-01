@@ -3,29 +3,24 @@
 {% block content %}
 <div class="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-700 to-cyan-500 p-4">
   
-  <!-- Animated Background Elements -->
   <div class="absolute inset-0 overflow-hidden">
     <div class="absolute w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob top-0 -left-4"></div>
     <div class="absolute w-96 h-96 bg-cyan-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000 top-0 -right-4"></div>
     <div class="absolute w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 bottom-0 left-20"></div>
   </div>
 
-  <!-- Glassmorphism Login Card -->
   <div class="relative z-10 w-full max-w-md">
     
-    <!-- Logo/Brand Section -->
     <div class="text-center mb-8">
       
       <h1 class="text-4xl font-bold text-white mb-2">Bluekick Sport</h1>
       <p class="text-blue-100 text-sm">Kick Your Limits</p>
     </div>
 
-    <!-- Main Login Card with Glassmorphism -->
     <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 transition-all duration-300 hover:bg-white/15 hover:shadow-blue-500/50">
       
       <h2 class="text-2xl font-bold text-white mb-6 text-center">Welcome Back</h2>
 
-      <!-- Messages -->
       {% if messages %}
       <div class="mb-6 space-y-2">
         {% for message in messages %}
@@ -41,7 +36,6 @@
       </div>
       {% endif %}
 
-      <!-- Login Form -->
        <form method="POST" action="" class="space-y-5">
           {% csrf_token %}
 
@@ -103,7 +97,6 @@
         </button>
         </form>
 
-      <!-- Divider -->
       <div class="relative my-6">
         <div class="absolute inset-0 flex items-center">
           <div class="w-full border-t border-white/20"></div>
@@ -113,7 +106,6 @@
         </div>
       </div>
 
-      <!-- Register Link -->
       <div class="text-center">
         <a href="{% url 'main:login' %}" class="inline-flex items-center justify-center w-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold py-3 px-6 rounded-xl border border-white/30 transition-all duration-300 hover:shadow-lg hover:scale-105">
           Already Have Account?
@@ -136,7 +128,6 @@
 
     
 
-    <!-- Footer Text -->
     <p class="text-center text-blue-100 text-sm mt-6">
       © 2025 Bluekick Sport. All rights reserved.
     </p>
@@ -147,7 +138,6 @@
 </div>
 
 <style>
-  /* Custom animations for background blobs */
   @keyframes blob {
     0%, 100% { transform: translate(0, 0) scale(1); }
     33% { transform: translate(30px, -50px) scale(1.1); }
@@ -166,7 +156,6 @@
     animation-delay: 4s;
   }
 
-  /* Style form inputs with glassmorphism */
   input[type="text"],
   input[type="password"] {
     @apply w-full pl-12 pr-4 py-3 bg-white/10 backdrop-blur-md border border-white/30 rounded-xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300;

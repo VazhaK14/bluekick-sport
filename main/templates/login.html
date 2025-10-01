@@ -3,17 +3,14 @@
 {% block content %}
 <div class="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-700 to-cyan-500 p-4">
   
-  <!-- Animated Background Elements -->
   <div class="absolute inset-0 overflow-hidden">
     <div class="absolute w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob top-0 -left-4"></div>
     <div class="absolute w-96 h-96 bg-cyan-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000 top-0 -right-4"></div>
     <div class="absolute w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 bottom-0 left-20"></div>
   </div>
 
-  <!-- Glassmorphism Login Card -->
   <div class="relative z-10 w-full max-w-md">
     
-    <!-- Logo/Brand Section -->
     <div class="text-center mb-8">
       <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 shadow-lg mb-4">
         <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -24,12 +21,10 @@
       <p class="text-blue-100 text-sm">Kick Your Limits</p>
     </div>
 
-    <!-- Main Login Card with Glassmorphism -->
     <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 transition-all duration-300 hover:bg-white/15 hover:shadow-blue-500/50">
       
       <h2 class="text-2xl font-bold text-white mb-6 text-center">Welcome Back</h2>
 
-      <!-- Messages -->
       {% if messages %}
       <div class="mb-6 space-y-2">
         {% for message in messages %}
@@ -45,7 +40,6 @@
       </div>
       {% endif %}
 
-      <!-- Login Form -->
       <form method="POST" action="" class="space-y-6">
         {% csrf_token %}
 
@@ -82,7 +76,6 @@
         </div>
 
         
-        <!-- Login Button -->
         <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-blue-500/50 transform hover:scale-105 transition-all duration-300 backdrop-blur-sm border border-white/20">
           <span class="flex items-center justify-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +86,6 @@
         </button>
       </form>
 
-      <!-- Divider -->
       <div class="relative my-6">
         <div class="absolute inset-0 flex items-center">
           <div class="w-full border-t border-white/20"></div>
@@ -103,7 +95,6 @@
         </div>
       </div>
 
-      <!-- Register Link -->
       <div class="text-center">
         <a href="{% url 'main:register' %}" class="inline-flex items-center justify-center w-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold py-3 px-6 rounded-xl border border-white/30 transition-all duration-300 hover:shadow-lg hover:scale-105">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,16 +106,14 @@
 
     </div>
 
-    <!-- Footer Text -->
     <p class="text-center text-blue-100 text-sm mt-6">
-      © 2024 Bluekick Sport. All rights reserved.
+      © 2025 Bluekick Sport. All rights reserved.
     </p>
 
   </div>
 </div>
 
 <style>
-  /* Custom animations for background blobs */
   @keyframes blob {
     0%, 100% { transform: translate(0, 0) scale(1); }
     33% { transform: translate(30px, -50px) scale(1.1); }
@@ -143,7 +132,6 @@
     animation-delay: 4s;
   }
 
-  /* Style form inputs with glassmorphism */
   input[type="text"],
   input[type="password"] {
     @apply w-full pl-12 pr-4 py-3 bg-white/10 backdrop-blur-md border border-white/30 rounded-xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300;
