@@ -1,41 +1,209 @@
-{% extends 'base.html' %} {% block content %}
-<p>
-  <a href="{% url 'main:show_main' %}"><button>Back to Product List</button></a>
-</p>
+{% extends 'base.html' %}
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-cyan-500 relative overflow-hidden">
+  
+  <!-- Animated Background Elements -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob top-0 -left-4"></div>
+    <div class="absolute w-96 h-96 bg-cyan-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000 top-0 -right-4"></div>
+    <div class="absolute w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000 bottom-0 left-1/2"></div>
+  </div>
 
-<h1>{{product.name}}</h1>
-<p>
-  <b>{{product.get_category_display}}</b> {% if product.is_featured %} |
-  <b>Featured</b>
-  <span>
-    {%endif %} {% if product.is_product_top %} | <b>Top Product!</b>
-    {% endif %} | Stocks: {{product.stock}} | Rating: {{product.rating}} |
-    Price: {{product.price}}
-  </span>
-</p>
+  <!-- Navbar -->
+  <div class="relative z-20">
+    {% include 'navbar.html' %}
+  </div>
 
-{% if product.thumbnail %}
-<img src="{{product.thumbnail}}" alt="thumbnail" width="150" height="100" />
-<br />
-{% endif %}
+  <!-- Main Content -->
+  <div class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24">
+    
+    <!-- Back Button -->
+    <div class="mb-6">
+      <a href="{% url 'main:show_main' %}">
+        <button class="px-4 sm:px-6 py-2.5 sm:py-3 bg-white/10 backdrop-blur-md border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg text-sm sm:text-base">
+          <span class="flex items-center">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Product List
+          </span>
+        </button>
+      </a>
+    </div>
 
-<p>{{product.description}}</p>
+    <!-- Product Detail Card -->
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+        
+        <!-- Product Image -->
+        <div class="p-6 sm:p-8">
+          {% if product.thumbnail %}
+          <div class="relative rounded-2xl overflow-hidden shadow-2xl group">
+            <img src="{{product.thumbnail}}" alt="{{product.name}}" class="w-full h-64 sm:h-96 object-cover transition-transform duration-300 group-hover:scale-110" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </div>
+          {% else %}
+          <div class="w-full h-64 sm:h-96 flex flex-col items-center justify-center bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
+            <svg class="w-20 h-20 sm:w-24 sm:h-24 text-white/50 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <p class="text-white/70 text-sm sm:text-base">No Image Available</p>
+          </div>
+          {% endif %}
+        </div>
 
-{% if product.stock == 0 %}
-<h3>Product Out of Stock!</h3>
-{% else %}
-<form method="post">
-  {% csrf_token %}
-  <p>
-    Give Rating:
-    <span><input type="number" name="rate" min="1" max="5" /></span>
-  </p>
-  <button type="submit">Buy Product</button>
-</form>
+        <!-- Product Info -->
+        <div class="p-6 sm:p-8 flex flex-col">
+          <!-- Product Name -->
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">{{product.name}}</h1>
+          
+          <!-- Badges & Info -->
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-3 py-1 text-xs sm:text-sm rounded-full bg-blue-500/30 backdrop-blur-md border border-blue-400/50 text-white font-semibold">
+              {{product.get_category_display}}
+            </span>
+            {% if product.is_featured %}
+            <span class="px-3 py-1 text-xs sm:text-sm rounded-full bg-yellow-500/30 backdrop-blur-md border border-yellow-400/50 text-yellow-200 font-semibold">
+              ⭐ Featured
+            </span>
+            {% endif %}
+            {% if product.is_product_top %}
+            <span class="px-3 py-1 text-xs sm:text-sm rounded-full bg-green-500/30 backdrop-blur-md border border-green-400/50 text-green-200 font-semibold">
+              🏆 Top Product
+            </span>
+            {% endif %}
+          </div>
 
-{% if product.user %}
-<p>Seller: {{ product.user.username }}</p>
-{% else %}
-<p>Author: Anonymous</p>
+          <!-- Stats -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 sm:p-4 border border-white/20">
+              <div class="flex items-center text-blue-100 text-xs sm:text-sm mb-1">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
+                Stock
+              </div>
+              <p class="text-white font-bold text-lg sm:text-xl">{{product.stock}}</p>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 sm:p-4 border border-white/20">
+              <div class="flex items-center text-blue-100 text-xs sm:text-sm mb-1">
+                <svg class="w-4 h-4 mr-1 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+                Rating
+              </div>
+              <p class="text-white font-bold text-lg sm:text-xl">{{product.rating}}</p>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 sm:p-4 border border-white/20 col-span-2 sm:col-span-1">
+              <div class="flex items-center text-blue-100 text-xs sm:text-sm mb-1">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Price
+              </div>
+              <p class="text-white font-bold text-lg sm:text-xl">Rp {{product.price|floatformat:0}}</p>
+            </div>
+          </div>
 
-{% endif %} {% endif %} {% endblock content %}
+          <!-- Description -->
+          <div class="mb-6">
+            <h3 class="text-white font-semibold text-lg sm:text-xl mb-3">Description</h3>
+            <div class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+              <p class="text-blue-100 text-sm sm:text-base leading-relaxed">{{product.description}}</p>
+            </div>
+          </div>
+
+          <!-- Seller Info -->
+          {% if product.user %}
+          <div class="mb-6 bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+            <div class="flex items-center">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-white font-bold text-sm sm:text-base mr-3">
+                {{ product.user.username|first|upper }}
+              </div>
+              <div>
+                <p class="text-blue-100 text-xs sm:text-sm">Sold by</p>
+                <p class="text-white font-semibold text-sm sm:text-base">{{ product.user.username }}</p>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="mb-6 bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+            <p class="text-blue-100 text-sm">Seller: <span class="text-white font-semibold">Anonymous</span></p>
+          </div>
+          {% endif %}
+
+          <!-- Purchase Section -->
+          {% if product.stock == 0 %}
+          <div class="bg-red-500/20 backdrop-blur-md border border-red-400/50 rounded-xl p-6 text-center">
+            <svg class="w-16 h-16 text-red-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h3 class="text-white font-bold text-xl mb-2">Product Out of Stock!</h3>
+            <p class="text-red-200 text-sm">This product is currently unavailable. Please check back later.</p>
+          </div>
+          {% else %}
+          <form method="post" class="mt-auto">
+            {% csrf_token %}
+            
+            <!-- Rating Input -->
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-5 border border-white/20 mb-4">
+              <label class="block text-white font-semibold mb-3 text-sm sm:text-base">Give Your Rating</label>
+              <div class="flex items-center gap-3">
+                <input 
+                  type="number" 
+                  name="rate" 
+                  min="1" 
+                  max="5" 
+                  placeholder="1-5"
+                  class="flex-1 px-4 py-3 bg-white/10 backdrop-blur-md border border-white/30 rounded-xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+                />
+                <div class="flex gap-1">
+                  <svg class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Buy Button -->
+            <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 sm:py-4 px-6 rounded-xl shadow-lg hover:shadow-blue-500/50 transform hover:scale-105 transition-all duration-300 text-sm sm:text-base">
+              <span class="flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                Buy Product Now
+              </span>
+            </button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Spacing -->
+    <div class="h-8"></div>
+  </div>
+</div>
+
+<style>
+  @keyframes blob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+  }
+  
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+</style>
+{% endblock content %}

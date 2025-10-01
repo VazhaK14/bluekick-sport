@@ -1,28 +1,157 @@
-{% extends 'base.html' %} {% block meta %}
-<title>Login</title>
-{% endblock meta %} {% block content %}
-<div class="login">
-  <h1>Login</h1>
+{% extends 'base.html' %}
 
-  <form method="POST" action="">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input class="btn login_btn" type="submit" value="Login" /></td>
-      </tr>
-    </table>
-  </form>
+{% block content %}
+<div class="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-700 to-cyan-500 p-4">
+  
+  <!-- Animated Background Elements -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div class="absolute w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob top-0 -left-4"></div>
+    <div class="absolute w-96 h-96 bg-cyan-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000 top-0 -right-4"></div>
+    <div class="absolute w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 bottom-0 left-20"></div>
+  </div>
 
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %} Don't have an account yet?
-  <a href="{% url 'main:register' %}">Register Now</a>
+  <!-- Glassmorphism Login Card -->
+  <div class="relative z-10 w-full max-w-md">
+    
+    <!-- Logo/Brand Section -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 shadow-lg mb-4">
+        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+      </div>
+      <h1 class="text-4xl font-bold text-white mb-2">Bluekick Sport</h1>
+      <p class="text-blue-100 text-sm">Kick Your Limits</p>
+    </div>
+
+    <!-- Main Login Card with Glassmorphism -->
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 transition-all duration-300 hover:bg-white/15 hover:shadow-blue-500/50">
+      
+      <h2 class="text-2xl font-bold text-white mb-6 text-center">Welcome Back</h2>
+
+      <!-- Messages -->
+      {% if messages %}
+      <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div class="bg-red-500/20 backdrop-blur-md border border-red-300/30 rounded-xl p-4 text-white text-sm animate-pulse">
+          <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            {{ message }}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Login Form -->
+      <form method="POST" action="" class="space-y-6">
+        {% csrf_token %}
+
+        <div>
+          <label
+            for="username"
+            class="block text-sm font-medium text-white mb-2"
+            >Username</label
+          >
+          <input
+            id="username"
+            name="username"
+            type="text"
+            required
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-green-500 transition-colors"
+            placeholder="Enter your username"
+          />
+        </div>
+
+        <div>
+          <label
+            for="password"
+            class="block text-sm font-medium text-white mb-2"
+            >Password</label
+          >
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-green-500 transition-colors"
+            placeholder="Enter your password"
+          />
+        </div>
+
+        
+        <!-- Login Button -->
+        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-blue-500/50 transform hover:scale-105 transition-all duration-300 backdrop-blur-sm border border-white/20">
+          <span class="flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+            </svg>
+            Login
+          </span>
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="relative my-6">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-white/20"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+          <span class="px-4 bg-transparent text-blue-100">New to Bluekick?</span>
+        </div>
+      </div>
+
+      <!-- Register Link -->
+      <div class="text-center">
+        <a href="{% url 'main:register' %}" class="inline-flex items-center justify-center w-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold py-3 px-6 rounded-xl border border-white/30 transition-all duration-300 hover:shadow-lg hover:scale-105">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+          </svg>
+          Create New Account
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Footer Text -->
+    <p class="text-center text-blue-100 text-sm mt-6">
+      © 2024 Bluekick Sport. All rights reserved.
+    </p>
+
+  </div>
 </div>
 
+<style>
+  /* Custom animations for background blobs */
+  @keyframes blob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+  }
+  
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  /* Style form inputs with glassmorphism */
+  input[type="text"],
+  input[type="password"] {
+    @apply w-full pl-12 pr-4 py-3 bg-white/10 backdrop-blur-md border border-white/30 rounded-xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300;
+  }
+
+  input[type="text"]::placeholder,
+  input[type="password"]::placeholder {
+    @apply text-blue-200;
+  }
+</style>
 {% endblock content %}

@@ -9,7 +9,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'css/global.css' %}" />
   </head>
-  <body>
-    {% block content %}{% endblock content %}
+  <body class="text-base">
+    {% block content %}
+    {% include 'navbar.html' %}
+    {% endblock content %}
   </body>
 </html>

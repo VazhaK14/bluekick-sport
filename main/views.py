@@ -14,7 +14,7 @@ from django.contrib.auth import *
 from django.contrib.auth.decorators import *
 
 # Create your views here.
-@login_required(login_url='/login')
+# @login_required(login_url='/login')
 def show_main(request):
     filter_type = request.GET.get("filter", "all")
     seller_list = Seller.objects.all()
@@ -48,7 +48,7 @@ def add_product(request):
     context = {'form': form}
     return render(request, 'add_product.html', context)
 
-@login_required(login_url='/login')
+# @login_required(login_url='/login')
 def show_product(request, id):
     product = get_object_or_404(Product, pk=id)
     context = {

@@ -1,17 +1,184 @@
-{% extends 'base.html' %} {% block content %}
-<h1>Add Product</h1>
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Edit Product - Bluekick Sport</title>
+{% endblock meta %}
 
-<form method="POST">
-  {% csrf_token %}
-  <table>
-    {{ form.as_table }}
-    <tr>
-      <td></td>
-      <td>
-        <input type="submit" value="Add PRODUCT" />
-      </td>
-    </tr>
-  </table>
-</form>
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-cyan-500 relative overflow-hidden">
+  
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob top-0 -left-4"></div>
+    <div class="absolute w-96 h-96 bg-cyan-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000 top-0 -right-4"></div>
+    <div class="absolute w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000 bottom-0 left-1/2"></div>
+  </div>
 
+  <div class="relative z-20">
+    {% include 'navbar.html' %}
+  </div>
+
+  <div class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24">
+    
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-6 sm:p-8 mb-6 text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-yellow-500/20 backdrop-blur-md border border-yellow-400/30 shadow-lg mb-4">
+        <svg class="w-10 h-10 sm:w-12 sm:h-12 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+        </svg>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Edit Product</h1>
+      <p class="text-blue-100 text-sm sm:text-base">Update your product information</p>
+    </div>
+
+    <div class="max-w-3xl mx-auto">
+      <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-6 sm:p-8">
+        <form method="POST" class="space-y-5">
+          {% csrf_token %}
+          
+          {% for field in form %}
+          <div class="space-y-2">
+            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-white">
+              {{ field.label }}
+              {% if field.field.required %}
+              <span class="text-red-400">*</span>
+              {% endif %}
+            </label>
+            
+            {% if field.field.widget.input_type == 'checkbox' %}
+            <div class="flex items-center">
+              <input 
+                type="checkbox" 
+                name="{{ field.name }}" 
+                id="{{ field.id_for_label }}"
+                {% if field.value %}checked{% endif %}
+                class="w-5 h-5 rounded bg-white/10 border-white/30 text-blue-500 focus:ring-2 focus:ring-cyan-400 backdrop-blur-md"
+              />
+              <span class="ml-2 text-sm text-blue-100">{{ field.help_text }}</span>
+            </div>
+            {% elif field.field.widget.input_type == 'select' %}
+            <div class="relative">
+              {% with field_html=field|safe %}
+              <div class="select-wrapper">
+                {{ field }}
+              </div>
+              {% endwith %}
+            </div>
+            {% elif field.field.widget.input_type == 'textarea' %}
+            <textarea 
+              name="{{ field.name }}" 
+              id="{{ field.id_for_label }}"
+              rows="4"
+              placeholder="{{ field.help_text }}"
+              class="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/30 rounded-xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-300 resize-none text-sm sm:text-base"
+            >{{ field.value|default:'' }}</textarea>
+            {% else %}
+            <input 
+              type="{{ field.field.widget.input_type }}" 
+              name="{{ field.name }}" 
+              id="{{ field.id_for_label }}"
+              value="{{ field.value|default:'' }}"
+              placeholder="{{ field.help_text }}"
+              {% if field.field.required %}required{% endif %}
+              class="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/30 rounded-xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
+            />
+            {% endif %}
+            
+            {% if field.errors %}
+            <div class="bg-red-500/20 backdrop-blur-md border border-red-400/50 rounded-lg p-2 mt-1">
+              {% for error in field.errors %}
+              <p class="text-red-200 text-xs sm:text-sm">{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% if field.help_text and field.field.widget.input_type != 'checkbox' %}
+            <p class="text-blue-200 text-xs sm:text-sm">{{ field.help_text }}</p>
+            {% endif %}
+          </div>
+          {% endfor %}
+
+          <div class="flex flex-col sm:flex-row gap-3 pt-4">
+            <button type="submit" class="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-yellow-500/50 transform hover:scale-105 transition-all duration-300 text-sm sm:text-base">
+              <span class="flex items-center justify-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Save Changes
+              </span>
+            </button>
+            
+            <a href="{% url 'main:show_main' %}" class="flex-1">
+              <button type="button" class="w-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold py-3 px-6 rounded-xl border border-white/30 transition-all duration-300 hover:scale-105 text-sm sm:text-base">
+                <span class="flex items-center justify-center">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                  Cancel
+                </span>
+              </button>
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="h-8"></div>
+  </div>
+</div>
+
+<style>
+  @keyframes blob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+  }
+  
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  select option {
+    background-color: #1e3a8a;
+    color: white;
+  }
+
+  .select-wrapper select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0.75rem;
+    color: white;
+    outline: none;
+    transition: all 0.3s;
+    font-size: 0.875rem;
+  }
+
+  @media (min-width: 640px) {
+    .select-wrapper select {
+      font-size: 1rem;
+    }
+  }
+
+  .select-wrapper select:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #22d3ee;
+    border-color: transparent;
+  }
+
+  .select-wrapper select option {
+    background-color: #1e3a8a;
+    color: white;
+    padding: 0.5rem;
+  }
+</style>
 {% endblock %}

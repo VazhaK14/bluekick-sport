@@ -673,4 +673,247 @@ else:
 5. Melakukan import tailwind pada `global.css` untuk snippet dengan `@import "tailwindcss"`
 
 6. Menambahkan edit_product dan delete_product pada `views.py` sebagai fitur untuk menghapus dan merubah attribut produk.
+```python
+def edit_product(request, id):
+    product = get_object_or_404(Product, pk=id)
+    form = ProductForm(request.POST or None, instance=product)
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('main:show_main')
+    
+    context = {
+        'form': form
+    }
+
+    return render(request, 'edit_product.html', context)
+
+
+def delete_product(request, id):
+    product = get_object_or_404(Product, pk=id)
+    product.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))
+```
+
+7. Membuat laman `edit_product.html` pada main.
+```html
+{% extends 'base.html' %} {% load static %} {% block content %} {% block meta %}
+<title>Login - Bluekick Sport</title>
+{% endblock meta %}
+
+<h1>Edit News</h1>
+
+
+<form method="POST">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+    <tr>
+      <td></td>
+      <td>
+        <input type="submit" value="Edit News" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+{% endblock %}
+
+```
+
+8. Mendaftarkan route dari fitur yang telah dibuat ke `urls.py`
+```python
+  path('product/<uuid:id>/edit', edit_product, name='edit_product'),
+  path('product/<uuid:id>/delete', delete_product, name='delete_product')
+```
+9. Membuat navbar dengan menerapkan tailwind styling ke dalamnya secara responsive.
+```html
+
+<nav
+  class="fixed top-0 left-0 w-full bg-white border-b border-gray-200 shadow-sm z-50"
+>
+  <div class="px-6 items-center md:px-16 py-4 flex flex-row justify-between">
+    <div>
+      <p class="font-bold text-xl">
+        <span class="text-blue-600">BlueKick</span> Sport
+      </p>
+    </div>
+
+    <div class="hidden md:flex items-center space-x-8">
+      <a
+        href="/"
+        class="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+      >
+        Home
+      </a>
+      <a
+        href="{% url 'main:add_product' %}"
+        class="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+      >
+        Add Product
+      </a>
+    </div>
+
+    <div class="hidden md:flex items-center space-x-6">
+      {% if user.is_authenticated %}
+      <div class="text-right">
+        <div class="text-sm font-medium text-gray-900">
+          {{ name|default:user.username }}
+        </div>
+        <div class="text-xs text-gray-500">
+          {{npm|default:"Student"}} - {{class|default:"Class"}}
+        </div>
+      </div>
+      <a
+        href="{% url 'main:logout' %}"
+        class="text-gray-600 hover:text-red-600 font-medium transition-colors"
+      >
+        Logout
+      </a>
+      {% else %}
+      <a
+        href="{% url 'main:login' %}"
+        class="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+      >
+        Login
+      </a>
+      <a
+        href="{% url 'main:register' %}"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium transition-colors"
+      >
+        Register
+      </a>
+      {% endif %}
+    </div>
+
+   <div class="md:hidden flex items-center">
+          <button class="mobile-menu-button p-2 text-gray-600 hover:text-gray-900 transition-colors">
+            <span class="sr-only">Open menu</span>
+            <div class="w-6 h-6 flex flex-col justify-center items-center">
+              <span class="bg-current block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"></span>
+              <span class="bg-current block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm my-0.5"></span>
+              <span class="bg-current block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"></span>
+            </div>
+          </button>
+        </div>
+    </div>
+
+    <div class="mobile-menu hidden md:hidden bg-white border-t border-gray-200">
+      <div class="px-6 py-4 space-y-4">
+        <div class="space-y-1">
+          <a href="/" class="block text-gray-600 hover:text-gray-900 font-medium py-3 transition-colors"> Home </a>
+          <a href="{% url 'main:add_product' %}" class="block text-gray-600 hover:text-gray-900 font-medium py-3 transition-colors"> Add Product </a>
+        </div>
+      </div>
+
+        <div class="border-t border-gray-200 pt-4 px-6">
+          {% if user.is_authenticated %}
+            <div class="mb-4">
+              <div class="font-medium text-gray-900">{{ name|default:user.username }}</div>
+              <div class="text-sm text-gray-500">{{ npm|default:"Student" }} - {{ class|default:"Class" }}</div>
+            </div>
+            <a href="{% url 'main:logout' %}" class="block text-red-600 hover:text-red-700 font-medium py-3 transition-colors">
+              Logout
+            </a>
+          {% else %}
+            <div class="space-y-3">
+              <a href="{% url 'main:login' %}" class="block text-gray-600 hover:text-gray-900 font-medium py-3 transition-colors">
+                Login
+              </a>
+              <a href="{% url 'main:register' %}" class="block bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded text-center transition-colors">
+                Register
+              </a>
+            </div>
+          {% endif %}
+        </div>
+    </div>
+  </div>
+
+  <script>
+    const btn = document.querySelector("button.mobile-menu-button");
+    const menu = document.querySelector(".mobile-menu");
+
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("hidden");
+    });
+  </script>
+</nav>
+
+```
+
+10. Menambah styling ke `main.html` untuk mempercantik halaman serta menambahkan edit dan delete button ke produk yang dibuat oleh user yang terautentikasi.
+```
+{% extends 'base.html' %}
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="flex flex-col items-center justify-center mt-20 pb-6 border-b-2 border-gray-300">
+  <h1 class="text-4xl font-extrabold text-primary-600">Bluekick Sports</h1>
+  <p class="text-lg text-gray-600 mt-2">Your Most Trusted Original Sports Wearable</p>
+</div>
+
+<div class="flex justify-center gap-4 mt-6">
+  <p class="text-2xl">Welcome, {{user.username}}</p>
+</div>
+
+<h5 class="text-center mt-4 text-gray-500">Sesi terakhir login: 
+  <span class="font-semibold text-gray-700">{{ last_login }}</span>
+</h5>
+
+<div class="flex justify-center gap-4 mt-6">
+  <a href="?filter=all">
+    <button type="button" class="px-5 py-2 rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 transition">All Products</button>
+  </a>
+  <a href="?filter=my">
+    <button type="button" class="px-5 py-2 rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 transition">My Products</button>
+  </a>
+</div>
+
+<hr class="my-8 border-gray-300"/>
+
+{% if not product_list %}
+  <p class="text-center text-gray-600">Belum ada product pada {{app_name}}</p>
+{% else %}
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-10">
+    {% for product in product_list %}
+      <div class="border rounded-2xl shadow-md hover:shadow-lg transition p-6 max-sm:p-3 flex flex-col bg-white">
+        {% if product.thumbnail %}
+          <img src="{{ product.thumbnail }}" alt="thumbnail" class="w-full h-40 object-cover rounded-lg mb-4"/>
+        {% else %}
+          <div class="w-full h-40 flex items-center justify-center bg-gray-100 rounded-lg mb-4 text-gray-400">
+            No Image
+          </div>
+        {% endif %}
+
+        <h2 class="text-xl font-bold text-primary-600 mb-1 hover:text-yellow-600 transition-colors">
+          <a href="{% url 'main:show_product' product.id %}">{{ product.name }}</a>
+        </h2>
+
+        <p class="text-sm text-gray-600 mb-2">
+          <b>{{ product.get_category_display }}</b>
+          {% if product.is_featured %} | <b class="text-yellow-600">Featured</b> {% endif %}
+          {% if product.is_product_top %} | <b class="text-green-600">Top Product!</b> {% endif %}
+        </p>
+
+        <p class="text-sm text-gray-500 mb-3">Stocks: {{ product.stock }} | ⭐ {{ product.rating }}</p>
+
+        <p class="text-gray-700 text-sm mb-4">{{ product.description|truncatewords:25 }}...</p>
+        <div class="flex gap-3 mt-auto">
+          {% if user.is_authenticated and product.user == user %}
+          <a href="{% url 'main:edit_product' product.pk %}">
+            <button class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600  transition">Edit</button>
+          </a>
+          <a href="{% url 'main:delete_product' product.pk %}">
+            <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600  transition">Delete</button>
+
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock content %}
+
+```
+
 
