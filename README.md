@@ -913,7 +913,7 @@ def delete_product(request, id):
   </div>
 {% endif %}
 {% endblock content %}
-
 ```
 
-
+---
+<h1>Tugas 6: Javascript dan AJAX<h1/>
