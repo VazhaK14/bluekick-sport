@@ -33,35 +33,69 @@ def show_main(request):
         'last_login': request.COOKIES.get('last_login', 'Never')
     }
 
+    # Handle AJAX requests for product refresh
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        from django.template.loader import render_to_string
+        # Render only the products section for AJAX requests
+        products_context = {
+            'product_list': product_list,
+            'user': request.user,
+            'name': request.user.username,
+            'app_name': 'BlueKick Sport'
+        }
+        products_html = render_to_string('products_section.html', products_context, request)
+
+        return JsonResponse({
+            'success': True,
+            'products_html': products_html,
+            'product_count': len(product_list)
+        })
+
     return render(request, 'main.html', context)
 
 
 def add_product(request):
-    form = ProductForm(request.POST or None)
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
 
-    if form.is_valid() and request.method == 'POST':
-        product_entry = form.save(commit=False)
-        product_entry.user = request.user
-        product_entry.save()
-        return redirect('main:show_main')
-    
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            if form.is_valid():
+                product_entry = form.save(commit=False)
+                product_entry.user = request.user
+                product_entry.save()
+                return JsonResponse({"success": True, "redirect_url": "/"})
+            else:
+                return JsonResponse({"success": False, "error": "Invalid form data."})
+        else:
+            if form.is_valid():
+                product_entry = form.save(commit=False)
+                product_entry.user = request.user
+                product_entry.save()
+                return redirect('main:show_main')
+    else:
+        form = ProductForm()
     context = {'form': form}
     return render(request, 'add_product.html', context)
 
 @login_required(login_url='/login')
 def show_product(request, id):
     product = get_object_or_404(Product, pk=id)
-    context = {
-        'product': product
-    }
 
     if request.method == "POST":
-        rate = int(request.POST.get('rate', 0))
-        product.give_rating(rate)
-        product.stock -= 1
-        product.save()
-        return redirect('main:show_main')
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            rate = int(request.POST.get('rate', 0))
+            product.give_rating(rate)
+            product.stock -= 1
+            product.save()
+            return JsonResponse({"success": True, "redirect_url": "/"})
+        else:
+            rate = int(request.POST.get('rate', 0))
+            product.give_rating(rate)
+            product.stock -= 1
+            product.save()
+            return redirect('main:show_main')
 
+    context = {'product': product}
     return render(request, 'product_detail.html', context)
 
 def add_seller(request):
@@ -79,22 +113,37 @@ def add_seller(request):
 
 def edit_product(request, id):
     product = get_object_or_404(Product, pk=id)
-    form = ProductForm(request.POST or None, instance=product)
-    if form.is_valid() and request.method == "POST":
-        form.save()
-        return redirect('main:show_main')
-    
-    context = {
-        'form': form
-    }
+    if request.method == "POST":
+        form = ProductForm(request.POST, instance=product)
 
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            if form.is_valid():
+                form.save()
+                return JsonResponse({"success": True, "redirect_url": "/"})
+            else:
+                return JsonResponse({"success": False, "error": "Invalid form data."})
+        else:
+            if form.is_valid():
+                form.save()
+                return redirect('main:show_main')
+    else:
+        form = ProductForm(instance=product)
+    context = {'form': form}
     return render(request, 'edit_product.html', context)
 
 
 def delete_product(request, id):
     product = get_object_or_404(Product, pk=id)
-    product.delete()
-    return HttpResponseRedirect(reverse('main:show_main'))
+    if request.method == "POST" and request.headers.get("x-requested-with") == "XMLHttpRequest":
+        product.delete()
+        return JsonResponse({"success": True, "message": "Product deleted successfully."})
+    elif request.method == "GET":
+        # Fallback for GET requests (though we should use POST)
+        product.delete()
+        return JsonResponse({"success": True, "message": "Product deleted successfully."})
+    else:
+        product.delete()
+        return HttpResponseRedirect(reverse('main:show_main'))
 
 
 def show_xml(request):
@@ -126,33 +175,66 @@ def show_json_by_id(request, product_id):
         return HttpResponse(status=404)
     
 def register(request):
-    form = UserCreationForm()
-
     if request.method == "POST":
         form = UserCreationForm(data=request.POST)
 
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Your account has been successfully created!')
-            return redirect('main:login')
-    context = {'form':form}
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            if form.is_valid():
+                user = form.save()
+                return JsonResponse({
+                    "success": True,
+                    "redirect_url": "/login",
+                    "message": "Account created successfully! Please log in."
+                })
+            else:
+                return JsonResponse({
+                    "success": False,
+                    "error": "Registration failed. Please check your input."
+                })
+        else:
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Your account has been successfully created!')
+                return redirect('main:login')
+            else:
+                messages.error(request, 'Registration failed. Please check your input.')
+    else:
+        form = UserCreationForm()
+    context = {'form': form}
     return render(request, 'register.html', context)
 
 def login_user(request):
     if request.method == "POST":
-        form = AuthenticationForm(data=request.POST)
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
 
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            response = HttpResponseRedirect(reverse("main:show_main"))
-            response.set_cookie('last_login', str(datetime.datetime.now()))
-            return response
-    
-    else:
-        form = AuthenticationForm(request)
-    context = {'form':form}
-    return render(request, 'login.html', context)
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            if user is not None:
+                login(request, user)
+                response = JsonResponse({
+                    "success": True,
+                    "redirect_url": "/",
+                    "message": f"Welcome back, {user.username}!"
+                })
+                response.set_cookie('last_login', str(datetime.datetime.now()))
+                return response
+            else:
+                return JsonResponse({
+                    "success": False,
+                    "error": "Invalid username or password"
+                })
+        else:
+            # Handle normal form submission
+            if user is not None:
+                login(request, user)
+                response = redirect('main:show_main')
+                response.set_cookie('last_login', str(datetime.datetime.now()))
+                return response
+            else:
+                messages.error(request, 'Invalid username or password')
+                return render(request, 'login.html')
+    return render(request, 'login.html')
 
 def logout_user(request):
     logout(request)
