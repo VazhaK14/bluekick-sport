@@ -917,3 +917,34 @@ def delete_product(request, id):
 
 ---
 <h1>Tugas 6: Javascript dan AJAX<h1/>
+
+**Apa perbedaan antara synchronous request dan asynchronous request?**
+
+Synchronous bekerja dengan mengirim request, lalu page menunggu respon baru dengan berhenti sejenak, lalu setelah respon diterima baru page berjalan kembali (reload). Lebih simple tetapi lambat.
+
+Asynchronous bekerja dengan request dikirim di belakang tanpa harus menghentikan proses pada halaman utama, setelah respon di dapatkan halaman secara langsung akan memperbarui tanpa reload. Lebih kompleks tetapi lebih untuk dari sisi kecepatan dan interaktif
+
+
+**Bagaimana AJAX bekerja di Django (alur request-response)**
+
+Jika terdapat action dari sisi client yang mengirim request, AJAX akan mengirimnya ke Django tanpa mengganggu halaman utama. Setelah respon diberikan Javascript akan memperbarui DOM. Jadi client side tidak harus terhambat saat melakukan request
+
+**Apa keuntungan menggunakan AJAX dibandingkan render biasa di Django?**
+
+1. Lebih cepat
+2. Pengalaman pengguna lebih baik karena tidak harus menunggu saat request sesuatu
+3. Real time process
+4. Lebih efisien karena tidak mengirim request berupa satu halaman HTML tetapi hanya JSON yang diperlukan.
+
+**Bagaimana cara memastikan keamanan saat menggunakan AJAX untuk fitur Login dan Register di Django?**
+
+AJAX dapat menyertakan CSRF Token pada header di setiap request, jadi setiap request tetap memastikan keamanan CSRF-nya. 
+
+**Bagaimana AJAX mempengaruhi pengalaman pengguna (User Experience) pada website?**
+
+1. Respon lebih cepat dan secara real time
+2. User tidak harus menunggu saat melakukan request
+3. Lebih smooth dan dapat multitasking
+4. Terdapat visual seperti loading, request berhasil atau gagal yang dapat dikirimkan ajax secara dinamis. Jadi user dapat mengetahui status dari request-nya dan tidak hanya berupa loading.
+
+

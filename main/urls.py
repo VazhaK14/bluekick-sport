@@ -15,5 +15,7 @@ urlpatterns = [
     path('login/', login_user, name='login'),
     path('logout/', logout_user, name='logout'),
     path('product/<uuid:id>/edit', edit_product, name='edit_product'),
-    path('product/<uuid:id>/delete', delete_product, name='delete_product')
+    path('product/<uuid:id>/delete', delete_product, name='delete_product'),
+    path('proxy-image/', proxy_image, name='proxy_image'),
+    path('create-flutter/', create_product_flutter, name='create_product_flutter')
 ]
